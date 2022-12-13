@@ -1,3 +1,4 @@
+
 #include "catch2/catch_all.hpp"
 #include "solution.h"
 
@@ -66,8 +67,6 @@ TEST_CASE("Validate LCA") {
 
     clean(test);
 }
-
-
 TEST_CASE("Validate insert") {
 
     Node* test = new Node(100);
@@ -75,6 +74,8 @@ TEST_CASE("Validate insert") {
     test->right = new Node(140);
     test->left->left = new Node(25);
     test = insert(test, 150);
+
+
     CHECK(test->right->right->key == 150);
     test = insert(test, 75);
     CHECK(test->left->right->key == 75);
@@ -89,11 +90,115 @@ TEST_CASE("Validate remove") {
     test->right = new Node(140);
     test->left->left = new Node(25);
     test = remove(test, 25);
+
     CHECK(test->left->left == nullptr);
     test = remove(test, 100);
+
     CHECK(test->key == 140);
     CHECK(test->right == nullptr);
 
 
     clean(test);
 }
+
+//============================================
+
+TEST_CASE("Validate level()") {
+
+    Node* test = new Node(1);
+    test = insert(test, 2);
+    test = insert(test, -2);
+    test->left->right = new Node(-1);
+    test->left->left = new Node(-3);
+    test->right->right = new Node(3);
+    test->right->left = new Node(0);
+
+    int toBeFound = 0;
+    CHECK(level(test, toBeFound, 1) == 3);
+    toBeFound = -2;
+    CHECK(level(test, toBeFound, 1) == 2);
+    toBeFound = 1;
+    CHECK(level(test, toBeFound, 1) == 1);
+
+    clean(test);
+}
+
+TEST_CASE("Validate areSiblings()") {
+
+    Node* test = new Node(1);
+    test = insert(test, 2);
+    test = insert(test, -2);
+    test->left->right = new Node(-1);
+    test->left->left = new Node(-3);
+    test->right->right = new Node(3);
+    test->right->left = new Node(0);
+
+    int a = 0;
+    int b = 2;
+    CHECK_FALSE(areSiblings(test, a, b));
+    a = -2;
+    CHECK(areSiblings(test, a, b));
+    a = -1;
+    b = 0;
+    CHECK_FALSE(areSiblings(test, a, b));
+
+    clean(test);
+
+}
+
+TEST_CASE("Validate areCousins()") {
+
+    Node* test = new Node(1);
+    test = insert(test, 2);
+    test = insert(test, -2);
+    test->left->right = new Node(-1);
+    test->left->left = new Node(-3);
+    test->right->right = new Node(3);
+    test->right->left = new Node(0);
+
+    int a = 0;
+    int b = 2;
+    CHECK_FALSE(areCousins(test, a, b));
+    a = -2;
+    CHECK_FALSE(areCousins(test, a, b));
+    a = -1;
+    b = 0;
+    CHECK(areCousins(test, a, b));
+
+    clean(test);
+
+}
+
+
+TEST_CASE("Validate section()") {
+
+    Node* father = new Node(1);
+    father = insert(father, 2);
+    father = insert(father, -2);
+    father->left->right = new Node(-1);
+    father->left->left = new Node(-3);
+    father->right->right = new Node(3);
+    father->right->left = new Node(0);
+
+    Node* mother = new Node(3);
+    mother->left = new Node(0);
+    mother->left->left = new Node(-1);
+    mother->left->left->left = new Node(-3);
+    mother = insert(mother, 30);
+
+    Node* child = section(mother, father);
+
+    CHECK(isContains(child, -3));
+    CHECK(isContains(child, -1));
+    CHECK(isContains(child, 0));
+    CHECK(isContains(child, 3));
+    CHECK_FALSE(isContains(child, 1));
+    CHECK_FALSE(isContains(child, 2));
+    CHECK_FALSE(isContains(child, -2));
+    CHECK_FALSE(isContains(child, 30));
+
+    clean(father);
+    clean(mother);
+
+}
+

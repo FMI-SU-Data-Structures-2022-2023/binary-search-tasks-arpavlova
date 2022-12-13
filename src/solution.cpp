@@ -64,13 +64,53 @@ Node* remove(Node* node, int key)
     return node;
 }
 
-Node* section(const Node* l, const Node* r) {
-    return nullptr;
+void sectionCreator(const Node* l, const Node* r, Node* &result)
+{
+    if (!l || !r) { return; }
+    if (l->key == r->key) { result = insert(result, r->key); }
+    sectionCreator(l->left, r, result);
+    sectionCreator(l->right, r, result);
+    sectionCreator(l, r->right, result);
+    sectionCreator(l, r->left, result);
+
 }
 
-bool areCousins(const Node*, int key1, int key2) {
-    return false;
+Node* section(const Node* l, const Node* r) 
+{
+    Node* section = nullptr;
+    sectionCreator(l, r, section);
+
+    return section;
 }
+
+int level(const Node* root, int a, int lev)
+{
+    if (!root) { return -1; }
+    if (root->key == a) { return lev; }
+
+    int isInLeft = level(root->left, a, lev + 1);
+    int isInRight = level(root->right, a, lev + 1);
+
+    return isInLeft != -1 ? isInLeft : isInRight;
+
+}
+
+bool areSiblings(const Node* root, int a, int b)
+{
+    if (!root->left && !root->right) { return false; }
+    if((root->left->key == a && root->right->key == b) 
+        || (root->left->key == b && root->right->key == a))
+    {return true;}
+  
+    return areSiblings(root->right, a, b) || areSiblings(root->left, a, b);
+}
+
+bool areCousins(const Node* root, int key1, int key2)
+{
+    return (level(root, key1, 1) == level(root, key2, 1) && !areSiblings(root, key1, key2));
+}
+
+
 
 
 bool lcaFinder(const Node* root, int& lca, int x, int y)

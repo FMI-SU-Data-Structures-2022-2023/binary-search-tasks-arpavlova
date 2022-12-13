@@ -12,8 +12,13 @@ Node* insert(Node*, int);
 Node* getMax(Node*);
 Node* getMin(Node*);
 Node* remove(Node*, int);
+
 Node* section(const Node*, const Node*);
+
 bool areCousins(const Node*, int, int);
+int level(const Node* root, int a, int lev);
+bool areSiblings(const Node* root, int a, int b);
+
 int LCA(const Node*, int, int);
 #define WEEK7_TREE_H
 

@@ -44,6 +44,24 @@ Node* remove(Node* node, int key)
 {
     if (!node) { return nullptr; }
 
+    if (node->key < key) { node->right = remove(node->right, key); }
+    else if (node->key > key) { node->left = remove(node->left, key); }
+    else
+    {
+        if (!node->left && !node->right) { return nullptr; }
+        else if (node->left && !node->right) { return node->left; }
+        else if (node->right && !node->left) { return node->right; }
+
+        else
+        {
+            Node* minInRightSubtree = getMin(node->right);
+            node->key = minInRightSubtree->key;
+
+            node->right = remove(node->right, minInRightSubtree->key);
+        }
+    }
+
+    return node;
 }
 
 Node* section(const Node* l, const Node* r) {
